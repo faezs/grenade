@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP                   #-}
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE RecordWildCards       #-}
@@ -18,6 +19,10 @@ import           Control.Monad.Random ( MonadRandom, getRandom )
 
 import           Data.Singletons.TypeLits
 
+#if MIN_VERSION_base(4,9,0)
+import           Data.Kind (Type)
+#endif
+
 import           Numeric.LinearAlgebra.Static
 
 import           GHC.TypeLits
@@ -27,7 +32,7 @@ import           Grenade.Recurrent.Core
 
 data BasicRecurrent :: Nat -- Input layer size
                     -> Nat -- Output layer size
-                    -> * where
+                    -> Type where
   BasicRecurrent :: ( KnownNat input
                     , KnownNat output
                     , KnownNat matrixCols
@@ -40,7 +45,7 @@ data BasicRecurrent :: Nat -- Input layer size
 
 data BasicRecurrent' :: Nat -- Input layer size
                      -> Nat -- Output layer size
-                     -> * where
+                     -> Type where
   BasicRecurrent' :: ( KnownNat input
                      , KnownNat output
                      , KnownNat matrixCols

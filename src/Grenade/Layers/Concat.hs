@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP                   #-}
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE TypeOperators         #-}
@@ -8,6 +9,7 @@
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE StandaloneDeriving    #-}
+{-# LANGUAGE UndecidableInstances  #-}
 {-|
 Module      : Grenade.Layers.Concat
 Description : Concatenation layer
@@ -26,6 +28,10 @@ import           Data.Serialize
 import           Data.Singletons
 import           GHC.TypeLits
 
+#if MIN_VERSION_base(4,9,0)
+import           Data.Kind (Type)
+#endif
+
 import           Grenade.Core
 
 import           Numeric.LinearAlgebra.Static ( row, (===), splitRows, unrow, (#), split, R )
@@ -43,7 +49,7 @@ import           Numeric.LinearAlgebra.Static ( row, (===), splitRows, unrow, (#
 --
 -- 3D images become 3D images with more channels. The sizes must be the same, one can use Pad
 -- and Crop layers to ensure this is the case.
-data Concat :: Shape -> * -> Shape -> * -> * where
+data Concat :: Shape -> Type -> Shape -> Type -> Type where
   Concat :: x -> y -> Concat m x n y
 
 instance (Show x, Show y) => Show (Concat m x n y) where

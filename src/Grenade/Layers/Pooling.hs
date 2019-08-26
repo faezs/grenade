@@ -7,6 +7,7 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE UndecidableInstances  #-}
 {-|
 Module      : Grenade.Core.Pooling
 Description : Max Pooling layer for 2D and 3D images
@@ -28,6 +29,9 @@ import           GHC.TypeLits hiding (natVal)
 #else
 import           GHC.TypeLits
 #endif
+#if MIN_VERSION_base(4,9,0)
+import           Data.Kind (Type)
+#endif
 
 import           Grenade.Core
 import           Grenade.Layers.Internal.Pooling
@@ -42,7 +46,7 @@ import           Numeric.LinearAlgebra.Static as LAS hiding ((|||), build, toRow
 --   The kernel size dictates which input and output sizes will "fit". Fitting the equation:
 --   `out = (in - kernel) / stride + 1` for both dimensions.
 --
-data Pooling :: Nat -> Nat -> Nat -> Nat -> * where
+data Pooling :: Nat -> Nat -> Nat -> Nat -> Type where
   Pooling :: Pooling kernelRows kernelColumns strideRows strideColumns
 
 instance Show (Pooling k k' s s') where

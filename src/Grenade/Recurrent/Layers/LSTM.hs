@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP                   #-}
 {-# LANGUAGE BangPatterns          #-}
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE GADTs                 #-}
@@ -23,6 +24,10 @@ import           Data.Proxy
 import           Data.Serialize
 import           Data.Singletons.TypeLits
 
+#if MIN_VERSION_base(4,9,0)
+import           Data.Kind (Type)
+#endif
+
 import qualified Numeric.LinearAlgebra as LA
 import           Numeric.LinearAlgebra.Static
 
@@ -36,14 +41,14 @@ import           Grenade.Layers.Internal.Update
 --   This is a Peephole formulation, so the recurrent shape is
 --   just the cell state, the previous output is not held or used
 --   at all.
-data LSTM :: Nat -> Nat -> * where
+data LSTM :: Nat -> Nat -> Type where
   LSTM :: ( KnownNat input
           , KnownNat output
           ) => !(LSTMWeights input output) -- Weights
             -> !(LSTMWeights input output) -- Momentums
             -> LSTM input output
 
-data LSTMWeights :: Nat -> Nat -> * where
+data LSTMWeights :: Nat -> Nat -> Type where
   LSTMWeights :: ( KnownNat input
                  , KnownNat output
                  ) => {
